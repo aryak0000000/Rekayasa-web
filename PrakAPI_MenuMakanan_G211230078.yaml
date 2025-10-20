@@ -1,0 +1,208 @@
+openapi: "3.0.2"
+info:
+  title: API Menu Makanan
+  description: Dokumentasi API Menu Makanan untuk Matkul Rekayasa Web
+  version: '1.0'
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: admin@gmail.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+
+servers:
+  - url: http://localhost/json/server
+
+tags:
+  - name: token
+    description: Endpoint untuk mendapatkan token dengan akun login (username dan password)
+                  dan mengambil token dari tabel user
+  - name: CRUD
+    description: Endpoint untuk API CRUD data Menu Makanan dengan Autorisasi token JWT
+
+paths:
+  /makanan:
+    get:
+      tags:
+        - CRUD
+      summary: Mendapatkan daftar semua menu makanan
+      responses:
+        '200':
+          description: Berhasil mengambil daftar menu makanan
+          content:
+            application/json:
+              examples:
+                Contoh:
+                  summary: Contoh daftar menu makanan
+                  value:
+                    - id_makanan: 1
+                      nama_menu: Mie Ayam
+                      kategori: Makanan Utama
+                      harga: 12000
+                      deskripsi: Mie dengan suir ayam 
+                    - id_makanan: 2
+                      nama_menu: Es Teh / Teh Panas
+                      kategori: Minuman
+                      harga: 3000
+                      deskripsi: Minuman teh manis 
+
+    post:
+      tags:
+        - CRUD
+      summary: Menambahkan menu makanan baru
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/insertMakanan'
+      responses:
+        '201':
+          description: Menu makanan berhasil ditambahkan
+          content:
+            application/json:
+              example:
+                message: "Data menu makanan berhasil ditambahkan"
+                data:
+                  id_makanan: 3
+                  nama_menu: Mie Ayam Bakso
+                  kategori: Makanan Utama
+                  harga: 15000
+                  deskripsi: Mie dengan suir ayam dan bakso
+
+  /makanan/{id}:
+    get:
+      tags:
+        - CRUD
+      summary: Mendapatkan detail menu makanan berdasarkan ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID menu makanan
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Berhasil mengambil data menu makanan
+          content:
+            application/json:
+              example:
+                id_makanan: 1
+                nama_menu: Nasi Goreng Spesial
+                kategori: Makanan Utama
+                harga: 21000
+                deskripsi: Nasi goreng dengan ayam, telur, dan kerupuk
+
+    put:
+      tags:
+        - CRUD
+      summary: Memperbarui data menu makanan berdasarkan ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID menu makanan yang akan diperbarui
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Makanan'
+      responses:
+        '200':
+          description: Data menu makanan berhasil diperbarui
+          content:
+            application/json:
+              example:
+                message: "Data menu makanan berhasil diperbarui"
+                data:
+                  id_makanan: 1
+                  nama_menu: Nasi Goreng Babat
+                  kategori: Makanan Utama
+                  harga: 23000
+                  deskripsi: Nasi goreng dengan babat dan telur
+
+    delete:
+      tags:
+        - CRUD
+      summary: Menghapus data menu makanan berdasarkan ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID menu makanan yang akan dihapus
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Data menu makanan berhasil dihapus
+          content:
+            application/json:
+              example:
+                message: "Data menu makanan dengan ID 1 berhasil dihapus"
+
+  /makanan/create:
+    post:
+      tags:
+        - CRUD
+      summary: Membuat data menu makanan baru (method create)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/insertMakanan'
+      responses:
+        '201':
+          description: Menu makanan berhasil dibuat
+          content:
+            application/json:
+              example:
+                message: "Menu makanan baru berhasil dibuat"
+                data:
+                  id_makanan: 4
+                  nama_menu: Mie Ayam goreng
+                  kategori: Makanan Utama
+                  harga: 13000
+                  deskripsi: Mie kering dengan suir ayam 
+
+components:
+  schemas:
+    Makanan:
+      type: object
+      properties:
+        nama_menu:
+          type: string
+          example: Bakso
+        kategori:
+          type: string
+          example: Makanan Utama
+        harga:
+          type: integer
+          example: 14000
+        deskripsi:
+          type: string
+          example: Bakso kuah dengan jaroan
+
+    insertMakanan:
+      type: object
+      properties:
+        id_makanan:
+          type: integer
+          format: int64
+          example: 1
+        nama_menu:
+          type: string
+          example: Mie Ayam
+        kategori:
+          type: string
+          example: Makanan Utama
+        harga:
+          type: integer
+          example: 12000
+        deskripsi:
+          type: string
+          example: Mie dengan suir ayam
